@@ -22,7 +22,7 @@
 #ifndef __PYGEMS_TRACINGNODE__
 #define __PYGEMS_TRACINGNODE__
 
-#include <pygems/api.h>
+#include <pygems/pygems_export.h>
 
 #include <vector>
 
@@ -33,7 +33,7 @@ namespace pygems {
 
     public:
 
-        PYGEMS_API
+        PYGEMS_EXPORT
         Point3D( float x_ = 0.0f, float y_ = 0.0f, float z_ = 0.0f )
             : x( x_ ), y( y_ ), z( z_ ) { }
 
@@ -46,12 +46,12 @@ namespace pygems {
 
     public:
 
-        PYGEMS_API
+        PYGEMS_EXPORT
         TracingNode ( int id_ = 0, float radius_ = 0.0f,
                 Point3D position_ = Point3D( )): id( id_ ),
                 radius( radius_ ), position( position_ ) { }
 
-        PYGEMS_API
+        PYGEMS_EXPORT
         bool operator==( const TracingNode& node_ )
         {
             return ( this->id == node_.id ) && ( this->radius == node_.radius )

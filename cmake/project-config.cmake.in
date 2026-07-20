@@ -1,0 +1,10 @@
+@PACKAGE_INIT@
+
+# list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/modules")
+
+include(CMakeFindDependencyMacro)
+find_dependency(Python COMPONENTS Interpreter Development)
+find_dependency(Boost CONFIG COMPONENTS python${Python_VERSION_MAJOR}${Python_VERSION_MINOR})
+# find_dependency(nsol)
+
+include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME_LOWER@-targets.cmake")

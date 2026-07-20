@@ -1,20 +1,53 @@
+if(PYGEMS_WITH_EXAMPLES)
 
-set( PYGEMSCORRECTSECTION_SOURCES correctSection.cpp)
-set( PYGEMSCORRECTSECTION_LINK_LIBRARIES
-    pygems
-    ${Boost_LIBRARIES}
-    ${PYTHON_LIBRARIES}
+  # Function to create and install an example application
+  function(add_project_example)
+    set(options)
+    set(oneValueArgs TARGET_NAME)
+    set(multiValueArgs SOURCES LINK_LIBRARIES)
+    cmake_parse_arguments(PARSE_ARGV 0 ARG "${options}" "${oneValueArgs}" "${multiValueArgs}")
+
+    if(NOT ARG_TARGET_NAME OR NOT ARG_SOURCES)
+      message(FATAL_ERROR "TARGET_NAME and SOURCES are required arguments")
+    endif()
+
+    add_executable(${ARG_TARGET_NAME} ${ARG_SOURCES})
+    target_link_libraries(${ARG_TARGET_NAME} PRIVATE ${PROJECT_NAME} ${ARG_LINK_LIBRARIES})
+
+    # Get current parent scope value and create a local copy
+    set(PROJECT_EXAMPLES_FILES_VAR "${${PROJECT_NAME}_EXAMPLES_FILES}")
+    set(current_examples ${PROJECT_EXAMPLES_FILES_VAR})
+    
+    # Convert to CMake list and append new sources
+    list(APPEND current_examples ${ARG_SOURCES})
+    
+    # Remove duplicates and update parent scope
+    list(REMOVE_DUPLICATES current_examples)
+    set(${PROJECT_NAME}_EXAMPLES_FILES "${current_examples}" PARENT_SCOPE)
+
+    # Create all examples target
+    if(NOT TARGET ${PROJECT_NAME}_all_examples)
+      add_custom_target(${PROJECT_NAME}_all_examples)
+    endif()
+
+    # Add example to global examples target
+    add_dependencies(${PROJECT_NAME}_all_examples ${ARG_TARGET_NAME})
+  endfunction()
+
+  add_project_example(
+    TARGET_NAME pygemscorrectSection
+    SOURCES
+      correctSection.cpp
+  )
+
+  if(TARGET nsol)
+
+    add_project_example(
+      TARGET_NAME pygemsCorrectNeuronMorphology
+      SOURCES
+        correctNeuronMorphology.cpp
     )
-common_application( pygemsCorrectSection NOHELP)
 
+  endif( )
 
-if( nsol_FOUND )
-    set( PYGEMSCORRECTNEURONMORPHOLOGY_SOURCES correctNeuronMorphology.cpp)
-    set( PYGEMSCORRECTNEURONMORPHOLOGY_LINK_LIBRARIES
-        pygems
-        nsol
-        ${Boost_LIBRARIES}
-        ${PYTHON_LIBRARIES}
-        )
-    common_application( pygemsCorrectNeuronMorphology NOHELP)
-endif( )
+endif()

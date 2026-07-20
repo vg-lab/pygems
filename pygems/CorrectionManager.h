@@ -22,7 +22,7 @@
 #ifndef __PYGEMS_MANAGER__
 #define __PYGEMS_MANAGER__
 
-#include <pygems/api.h>
+#include <pygems/pygems_export.h>
 
 #include "CorrectionMethod.h"
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
@@ -56,18 +56,18 @@ namespace pygems
 
     public:
 
-        PYGEMS_API
+        PYGEMS_EXPORT
         CorrectionManager(const std::string& correctionMethodFile_,
                           const std::string& inVarName_ = "inNodes",
                           const std::string& outVarName_ = "outNodes" );
 
-        PYGEMS_API
+        PYGEMS_EXPORT
         ~CorrectionManager( );
 
-        PYGEMS_API
+        PYGEMS_EXPORT
         TracingNodes correct( const TracingNodes& nodes_ );
 
-        PYGEMS_API
+        PYGEMS_EXPORT
         static std::string pyErrorMessage( );
 
     private:
