@@ -72,6 +72,7 @@ target_sources(${PROJECT_NAME}
       ${PROJECT_SOURCE_DIR}
     FILES
       ${PYGEMS_PUBLIC_HEADERS}
+      ${PYGEMS_HEADERS}
 )
 
 # Add generated sources to the target
