@@ -27,101 +27,97 @@ namespace pygems
 {
     namespace bp = boost::python;
 
-
     CorrectionManager::CorrectionManager(
-            const std::string& correctionMethodFile_,
-            const std::string& inVarName_, const std::string& outVarName_ )
-        : _inVarName ( inVarName_)
-        , _outVarName ( outVarName_ )
+        const std::string& correctionMethodFile_, const std::string& inVarName_,
+        const std::string& outVarName_) :
+        _inVarName(inVarName_),
+        _outVarName(outVarName_)
     {
 #ifdef PYGEMS_USE_PYTHON3
-        PyImport_AppendInittab( "CorrectionFramework", &PyInit_CorrectionFramework );
+        PyImport_AppendInittab("CorrectionFramework",
+                               &PyInit_CorrectionFramework);
 #else
 
-        PyImport_AppendInittab( "CorrectionFramework", &initCorrectionFramework );
+        PyImport_AppendInittab("CorrectionFramework", &initCorrectionFramework);
 #endif
-        Py_Initialize( );
+        Py_Initialize();
 
-        _main = bp::import( "__main__" );
-        _globals = _main.attr( "__dict__" );
-        _module = _importModule( "correctionMethod", correctionMethodFile_.c_str( ),
-                _globals );
+        _main = bp::import("__main__");
+        _globals = _main.attr("__dict__");
+        _module = _importModule("correctionMethod",
+                                correctionMethodFile_.c_str(), _globals);
 
-        bp::object CorrectionMethodClass = _module.attr( "CorrectionMethod" );
+        bp::object CorrectionMethodClass = _module.attr("CorrectionMethod");
 
-        _correctionMethod = CorrectionMethodClass(  );
+        _correctionMethod = CorrectionMethodClass();
     }
 
-    CorrectionManager::~CorrectionManager( )
+    CorrectionManager::~CorrectionManager()
     {
-
     }
 
-    TracingNodes CorrectionManager::correct(const TracingNodes& nodes_ )
+    TracingNodes CorrectionManager::correct(const TracingNodes& nodes_)
     {
-        _module.attr( _inVarName.c_str( )) = nodes_;
-        _module.attr( _outVarName.c_str( )) = TracingNodes();
+        _module.attr(_inVarName.c_str()) = nodes_;
+        _module.attr(_outVarName.c_str()) = TracingNodes();
 
-        _correctionMethod.attr( "correct" )( );
+        _correctionMethod.attr("correct")();
 
-        TracingNodes outNodes = bp::extract < TracingNodes >(
-                _module.attr( _outVarName.c_str( )));
+        TracingNodes outNodes =
+            bp::extract<TracingNodes>(_module.attr(_outVarName.c_str()));
         return outNodes;
     }
 
-    std::string CorrectionManager::pyErrorMessage( void )
+    std::string CorrectionManager::pyErrorMessage(void)
     {
         std::string pyErrorMessage;
 
-        PyObject * ptype, *pvalue, *ptraceback;
+        PyObject *ptype, *pvalue, *ptraceback;
         PyErr_Fetch(&ptype, &pvalue, &ptraceback);
-        if (pvalue)
-        {
+        if (pvalue) {
             bp::handle<> hType(ptype);
             bp::object extype(hType);
             bp::handle<> hTraceback(ptraceback);
             bp::object traceback(hTraceback);
 
-            PyObject * valueStr = PyObject_Str( pvalue );
+            PyObject* valueStr = PyObject_Str(pvalue);
             std::string strErrorMessage;
-            if ( valueStr )
-                strErrorMessage = PyUnicode_AsUTF8( valueStr );
+            if (valueStr) {
+                strErrorMessage = PyUnicode_AsUTF8(valueStr);
+            }
 
-            long lineno = bp::extract<long>( traceback.attr( "tb_lineno" ));
+            long lineno = bp::extract<long>(traceback.attr("tb_lineno"));
             std::string filename = bp::extract<std::string>(
-                    traceback.attr( "tb_frame" ).attr( "f_code" ).attr(
-                            "co_filename" ));
-            if ( filename.compare( "<string>" ) == 0 )
-                filename = std::string( "" );
+                traceback.attr("tb_frame").attr("f_code").attr("co_filename"));
+            if (filename.compare("<string>") == 0) {
+                filename = std::string("");
+            }
 
-            pyErrorMessage = std::string( "File \"" ) + filename +
-                             std::string( "\", line " ) +
-                             std::to_string( lineno ) +
-                             std::string( "\nError: " ) + strErrorMessage;
-
+            pyErrorMessage = std::string("File \"") + filename
+                             + std::string("\", line ") + std::to_string(lineno)
+                             + std::string("\nError: ") + strErrorMessage;
         }
 
-        PyErr_Restore( ptype, pvalue, ptraceback );
+        PyErr_Restore(ptype, pvalue, ptraceback);
 
         return pyErrorMessage;
     }
 
-
-
-    bp::object CorrectionManager::_importModule(const std::string &module_,
-                                                const std::string &path_, bp::object &globals_ )
+    bp::object CorrectionManager::_importModule(const std::string& module_,
+                                                const std::string& path_,
+                                                bp::object& globals_)
     {
         bp::dict locals;
         locals["module_name"] = module_;
         locals["path"] = path_;
 
-
-        bp::exec( "import imp\n"
-                  "import sys\n"
-                  "new_module = imp.load_module(module_name, open(path), path, ('py', 'U', imp.PY_SOURCE))\n",
-                  globals_, locals );
+        bp::exec("import imp\n"
+                 "import sys\n"
+                 "new_module = imp.load_module(module_name, open(path), path, "
+                 "('py', 'U', imp.PY_SOURCE))\n",
+                 globals_, locals);
 
         return locals["new_module"];
     }
 
-}
+} // namespace pygems

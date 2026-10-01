@@ -22,29 +22,25 @@
 #ifndef __PYGEMS_CORRECTIONMETHOD__
 #define __PYGEMS_CORRECTIONMETHOD__
 
-
 #include "CorrectionMethodBase.h"
 #include <boost/python.hpp>
-
 
 namespace pygems
 {
 
     namespace bp = boost::python;
 
-    class CorrectionMethod final
-            : public CorrectionMethodBase
-            , public bp::wrapper < CorrectionMethodBase >
+    class CorrectionMethod final :
+        public CorrectionMethodBase,
+        public bp::wrapper<CorrectionMethodBase>
     {
-
         using CorrectionMethodBase::CorrectionMethodBase;
 
-        void correct( ) override
+        void correct() override
         {
-            get_override("correct")( );
+            get_override("correct")();
         };
-
     };
-}
+} // namespace pygems
 
 #endif //

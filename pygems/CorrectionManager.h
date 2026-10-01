@@ -31,49 +31,46 @@ namespace pygems
 {
     namespace bp = boost::python;
 
-    BOOST_PYTHON_MODULE( CorrectionFramework )
+    BOOST_PYTHON_MODULE(CorrectionFramework)
     {
-        bp::class_ < Point3D >( "Point3D" )
-                .def_readwrite( "x", &Point3D::x )
-                .def_readwrite( "y", &Point3D::y )
-                .def_readwrite( "z", &Point3D::z );
+        bp::class_<Point3D>("Point3D")
+            .def_readwrite("x", &Point3D::x)
+            .def_readwrite("y", &Point3D::y)
+            .def_readwrite("z", &Point3D::z);
 
-        bp::class_ < TracingNode >( "TracingNode" )
-                .def_readwrite( "id", &TracingNode::id )
-                .def_readwrite( "radius", &TracingNode::radius )
-                .def_readwrite( "position", &TracingNode::position );
+        bp::class_<TracingNode>("TracingNode")
+            .def_readwrite("id", &TracingNode::id)
+            .def_readwrite("radius", &TracingNode::radius)
+            .def_readwrite("position", &TracingNode::position);
 
-        bp::class_ < TracingNodes >( "TracingNodes" )
-                .def( bp::vector_indexing_suite <  TracingNodes >( ));
+        bp::class_<TracingNodes>("TracingNodes")
+            .def(bp::vector_indexing_suite<TracingNodes>());
 
-
-        bp::class_ < CorrectionMethod, boost::noncopyable>("CorrectionMethodBase");
+        bp::class_<CorrectionMethod, boost::noncopyable>(
+            "CorrectionMethodBase");
     }
-
 
     class CorrectionManager
     {
-
-    public:
-
+      public:
         PYGEMS_EXPORT
         CorrectionManager(const std::string& correctionMethodFile_,
                           const std::string& inVarName_ = "inNodes",
-                          const std::string& outVarName_ = "outNodes" );
+                          const std::string& outVarName_ = "outNodes");
 
         PYGEMS_EXPORT
-        ~CorrectionManager( );
+        ~CorrectionManager();
 
         PYGEMS_EXPORT
-        TracingNodes correct( const TracingNodes& nodes_ );
+        TracingNodes correct(const TracingNodes& nodes_);
 
         PYGEMS_EXPORT
-        static std::string pyErrorMessage( );
+        static std::string pyErrorMessage();
 
-    private:
-
-        bp::object _importModule ( const std::string& module_,
-                const std::string& path_, bp::object& globals_ );
+      private:
+        bp::object _importModule(const std::string& module_,
+                                 const std::string& path_,
+                                 bp::object& globals_);
 
         bp::object _main;
         bp::object _globals;
@@ -82,8 +79,7 @@ namespace pygems
 
         std::string _inVarName;
         std::string _outVarName;
-
     };
-}
+} // namespace pygems
 
 #endif //

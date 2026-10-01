@@ -28,16 +28,15 @@ namespace pygems
 
     class CorrectionMethodBase
     {
+      public:
+        CorrectionMethodBase(void)
+        {
+        }
 
-    public:
+        virtual ~CorrectionMethodBase() = default;
 
-        CorrectionMethodBase( void ) { }
-
-        virtual ~CorrectionMethodBase( ) = default;
-
-        virtual void correct( ) = 0;
-
+        virtual void correct() = 0;
     };
-}
+} // namespace pygems
 
 #endif //

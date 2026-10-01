@@ -25,56 +25,52 @@
 
 namespace bp = boost::python;
 
-void print( const pygems::TracingNode& node_,
-        const std::string& prefix_ = std::string( "    " ))
+void print(const pygems::TracingNode& node_,
+           const std::string& prefix_ = std::string("    "))
 {
     std::cout << prefix_ << "node: " << node_.id << " radius: " << node_.radius
               << " position: " << node_.position.x << ", " << node_.position.y
               << ", " << node_.position.z << std::endl;
 }
 
-int main( int argc, char* argv[] )
+int main(int argc, char* argv[])
 {
-    if( argc != 3 )
-    {
-        std::cout << "Usage error: Use " << argv[0] <<
-            " correction_file[.py] number_nodes[int]." << std::endl;
+    if (argc != 3) {
+        std::cout << "Usage error: Use " << argv[0]
+                  << " correction_file[.py] number_nodes[int]." << std::endl;
         return 1;
     }
 
-    int numNodes = std::atoi( argv[2] );
-    try
-    {
-        auto cManager = pygems::CorrectionManager( std::string( argv[1] ));
+    int numNodes = std::atoi(argv[2]);
+    try {
+        auto cManager = pygems::CorrectionManager(std::string(argv[1]));
 
         pygems::TracingNodes nodes((numNodes));
         pygems::TracingNode* newNode;
 
         std::srand(std::time(0));
-        for ( int i = 0; i < numNodes; ++i )
-        {
-            float radius = ((float)std::rand( ) / RAND_MAX ) * 2.0f;
-            newNode = new pygems::TracingNode( i, radius,
-                    pygems::Point3D( i*0.1f, i*0.5f, i*1.0f ));
+        for (int i = 0; i < numNodes; ++i) {
+            float radius = ((float)std::rand() / RAND_MAX) * 2.0f;
+            newNode = new pygems::TracingNode(
+                i, radius, pygems::Point3D(i * 0.1f, i * 0.5f, i * 1.0f));
             nodes[i] = *newNode;
         }
 
-        auto outNodes = cManager.correct( nodes );
+        auto outNodes = cManager.correct(nodes);
 
-        std::cout << "In nodes: " << nodes.size( ) << std::endl;
-        for ( auto node: nodes )
-            print ( node );
-        std::cout << "Out nodes: " << outNodes.size( ) << std::endl;
-        for ( auto node: outNodes )
-            print( node );
-
+        std::cout << "In nodes: " << nodes.size() << std::endl;
+        for (auto node : nodes) {
+            print(node);
+        }
+        std::cout << "Out nodes: " << outNodes.size() << std::endl;
+        for (auto node : outNodes) {
+            print(node);
+        }
 
         return 0;
-    }
-    catch( const bp::error_already_set& )
-    {
+    } catch (const bp::error_already_set&) {
         std::cerr << "Python execution error: " << std::endl;
-        auto errMessage = pygems::CorrectionManager::pyErrorMessage( );
+        auto errMessage = pygems::CorrectionManager::pyErrorMessage();
         std::cout << errMessage << std::endl;
 
         return 1;

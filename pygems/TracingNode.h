@@ -26,48 +26,50 @@
 
 #include <vector>
 
-namespace pygems {
+namespace pygems
+{
 
     class Point3D
     {
-
-    public:
-
+      public:
         PYGEMS_EXPORT
-        Point3D( float x_ = 0.0f, float y_ = 0.0f, float z_ = 0.0f )
-            : x( x_ ), y( y_ ), z( z_ ) { }
+        Point3D(float x_ = 0.0f, float y_ = 0.0f, float z_ = 0.0f) :
+            x(x_),
+            y(y_),
+            z(z_)
+        {
+        }
 
         float x, y, z;
-
     };
 
     class TracingNode
     {
-
-    public:
-
+      public:
         PYGEMS_EXPORT
-        TracingNode ( int id_ = 0, float radius_ = 0.0f,
-                Point3D position_ = Point3D( )): id( id_ ),
-                radius( radius_ ), position( position_ ) { }
-
-        PYGEMS_EXPORT
-        bool operator==( const TracingNode& node_ )
+        TracingNode(int id_ = 0, float radius_ = 0.0f,
+                    Point3D position_ = Point3D()) :
+            id(id_),
+            radius(radius_),
+            position(position_)
         {
-            return ( this->id == node_.id ) && ( this->radius == node_.radius )
-                && ( this->position.x == node_.position.x )
-                && ( this->position.y == node_.position.y )
-                && ( this->position.z == node_.position.z );
+        }
 
+        PYGEMS_EXPORT
+        bool operator==(const TracingNode& node_)
+        {
+            return (this->id == node_.id) && (this->radius == node_.radius)
+                   && (this->position.x == node_.position.x)
+                   && (this->position.y == node_.position.y)
+                   && (this->position.z == node_.position.z);
         }
 
         int id;
         float radius;
         Point3D position;
-
     };
 
-    typedef std::vector< TracingNode > TracingNodes;
-}
+    typedef std::vector<TracingNode> TracingNodes;
+} // namespace pygems
 
 #endif //__PYGEMS_TRACINGNODE__
